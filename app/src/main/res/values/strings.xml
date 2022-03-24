@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Movie Browser</string>
+
+    <string name="loading_data">Loading data</string>
+    <string name="error_loading_data">Error loading data</string>
+
+    <string name="item_image">Item Image</string>
+</resources>
