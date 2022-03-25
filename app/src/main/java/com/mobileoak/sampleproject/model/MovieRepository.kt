@@ -6,6 +6,7 @@ import com.mobileoak.sampleproject.network.ApiInterface
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -16,17 +17,22 @@ import kotlin.coroutines.suspendCoroutine
 class MovieRepository @Inject constructor() {
     private val TAG = MovieRepository::class.simpleName
 
+    // This isn't the best way to cache this, since the page size could change,
+    // the order could change, or any number of other things, but it's here to demonstrate
+    // where I would implement caching.
     private val movieListCache = HashMap<Int, List<Movie>>()
 
     private val API_KEY = "8b2abf063dfc9dd2ce0841c68fd7e56c"
 
+    // The code to support getting multiple pages of movies is partially completed
+    // but I would need to hook the data adapter to notify the view model to request more
     suspend fun getMovies(page: Int = 1): List<Movie> {
         val cachedList = movieListCache[page]
         return if (cachedList != null) {
-            Log.e(TAG, "Returning cached list")
+            Log.i(TAG, "Returning cached list")
             cachedList
         } else {
-            Log.e(TAG, "List is empty, calling network")
+            Log.i(TAG, "List is empty, calling network")
             val list = requestMovies(page)
             movieListCache[page] = list
             list
@@ -67,11 +73,17 @@ class NetworkRequestObject {
     var results = ArrayList<Movie>()
 }
 
-class Movie {
+
+class Movie: Serializable {
     @SerializedName("title")
     var title: String = ""
     @SerializedName("overview")
     var overview: String = ""
     @SerializedName("poster_path")
     var imageURL: String = ""
+
+    val fullImageUrl: String
+        get() {
+            return "https://image.tmdb.org/t/p/original/$imageURL"
+        }
 }

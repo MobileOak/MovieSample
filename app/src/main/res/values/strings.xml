@@ -5,4 +5,8 @@
     <string name="error_loading_data">Error loading data</string>
 
     <string name="item_image">Item Image</string>
+    <string name="title_activity_detail">DetailActivity</string>
+
+    <string name="buy_tickets">Buy Tickets</string>
+
 </resources>

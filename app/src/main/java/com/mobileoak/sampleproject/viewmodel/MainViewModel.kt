@@ -1,6 +1,5 @@
 package com.mobileoak.sampleproject.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import com.mobileoak.sampleproject.model.Movie
 import com.mobileoak.sampleproject.model.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 sealed class MainState {
@@ -30,10 +28,8 @@ class MainViewModel @Inject constructor(private val repository: MovieRepository)
 
     init {
         viewModelScope.launch {
-            Log.e(TAG, "Trying to get movies")
             try {
-                val movieList = repository.getMovies()
-                Log.e(TAG, "Got movies of size ${movieList.size}")
+                val movieList = repository.getMovies(1)
                 _state.postValue(MainState.DataLoaded(movieList))
             } catch (exception: Exception) {
                 _state.postValue(MainState.Error("An error occurred: " + exception.message))

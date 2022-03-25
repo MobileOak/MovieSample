@@ -1,10 +1,11 @@
 package com.mobileoak.sampleproject.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mobileoak.sampleproject.R
@@ -30,15 +31,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewManager = LinearLayoutManager(this)
-        viewAdapter = DataAdapter(emptyList(), this)
+        viewAdapter = DataAdapter { onViewModelClicked(it) }
 
         loadingTextView = findViewById(R.id.loading_text)
         errorTextView = findViewById(R.id.error_text)
 
         recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
-            // use a linear layout manager
             layoutManager = viewManager
-
             adapter = viewAdapter
         }
 
@@ -72,5 +71,13 @@ class MainActivity : AppCompatActivity() {
         errorTextView.text = error
         recyclerView.visibility = View.GONE
         loadingTextView.visibility = View.GONE
+    }
+
+    // Normally I would route this to the ViewModel but since we're just launching another
+    // activity here I just left it in the activity
+    private fun onViewModelClicked(movie: Movie) {
+        val detailsIntent = Intent(this, DetailActivity::class.java)
+        detailsIntent.putExtra("Movie", movie)
+        startActivity(detailsIntent)
     }
 }

@@ -1,6 +1,5 @@
 package com.mobileoak.sampleproject.ui
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -11,8 +10,10 @@ import com.bumptech.glide.Glide
 import com.mobileoak.sampleproject.R
 import com.mobileoak.sampleproject.model.Movie
 
-class DataAdapter(var dataset: List<Movie>, private val context: Context) :
+class DataAdapter(private val listener: (Movie) -> Unit) :
     RecyclerView.Adapter<DataAdapter.MyViewHolder>() {
+
+    private var dataset: List<Movie> = emptyList()
 
     class MyViewHolder(layout: LinearLayout) : RecyclerView.ViewHolder(layout) {
         val name: TextView = layout.findViewById(R.id.item_name)
@@ -29,17 +30,16 @@ class DataAdapter(var dataset: List<Movie>, private val context: Context) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val name = dataset[position].title
         val description = dataset[position].overview
-        val imageURL = dataset[position].imageURL
-        val fullImageURL = "https://image.tmdb.org/t/p/original/$imageURL"
+        val fullImageURL = dataset[position].fullImageUrl
 
         holder.name.text = name
         holder.description.text = description
 
         holder.itemView.setOnClickListener {
-
+            listener(dataset[position])
         }
 
-        Glide.with(context).load(fullImageURL).into(holder.itemImage)
+        Glide.with(holder.itemView.context).load(fullImageURL).into(holder.itemImage)
     }
 
     fun updateData(dataset: List<Movie>) {
